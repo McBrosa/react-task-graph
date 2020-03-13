@@ -11,26 +11,14 @@ import styles from "./Editor.module.scss";
 const Editor = () => {
   const dispatch = useDispatch();
   const editor = useMemo(() => withReact(createEditor()), []);
-  // Add the initial value when setting up our state.
   const [value, setValue] = useState(
     JSON.parse(localStorage.getItem("content")) || [
       {
         type: "paragraph",
-        children: [{ text: "A line of text in a paragraph." }]
+        children: [{ text: "" }]
       }
     ]
   );
-
-  // const [value, setValue] = useState(
-  //   JSON.parse(
-  //     localStorage.getItem("content") || [
-  //       {
-  //         type: "paragraph",
-  //         children: [{ text: "A line of text in a paragraph." }]
-  //       }
-  //     ]
-  //   )
-  // );
 
   const renderElement = useCallback(props => {
     switch (props.element.type) {
