@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 // Import the Slate editor factory.
-import { createEditor, Transforms, Editor as sEditor } from "slate";
+import { createEditor, Transforms, NodeEntry, Editor as sEditor } from "slate";
 import { withHistory } from "slate-history";
 import tasks, { addTask, loadTasksFromLocal } from "./tasksSlice";
 // Import the Slate components and React plugin.
@@ -14,8 +14,8 @@ const Editor = () => {
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
   const localContent = JSON.parse(localStorage.getItem("content")) || [
     {
-      type: "paragraph",
-      children: [{ text: "" }]
+      type: "task",
+      children: [{ text: "", tasks: {} }]
     }
   ];
   const [value, setValue] = useState(localContent);
@@ -42,16 +42,19 @@ const Editor = () => {
         break;
       case event.shiftKey && "Delete":
       case event.shiftKey && "Backspace":
+        event.preventDefault();
         sEditor.deleteBackward(editor, { unit: "block" });
       case "Enter":
         break;
       case "Tab":
+        event.preventDefault();
         const element = {
           type: "bulleted-list",
-          children: [{ children: [{ text: "" }], type: "list-item" }],
-          focus: { offset: 0, path: editor.marks }
+          children: [{ children: [{ text: "", tasks: {} }], type: "list-item" }]
         };
         Transforms.insertNodes(editor, element);
+        Transforms.setPoint(editor, {}, { edge: "focus" });
+
         dispatch(addTask("tab"));
     }
   };
