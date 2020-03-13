@@ -6,6 +6,7 @@ import tasks, { addTask, removeTask } from "./tasksSlice";
 import { Slate, Editable, withReact } from "slate-react";
 import { useDispatch } from "react-redux";
 import { Task } from "../index";
+import styles from "./Editor.module.scss";
 
 const Editor = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,17 @@ const Editor = () => {
     ]
   );
 
+  // const [value, setValue] = useState(
+  //   JSON.parse(
+  //     localStorage.getItem("content") || [
+  //       {
+  //         type: "paragraph",
+  //         children: [{ text: "A line of text in a paragraph." }]
+  //       }
+  //     ]
+  //   )
+  // );
+
   const renderElement = useCallback(props => {
     switch (props.element.type) {
       default:
@@ -28,26 +40,28 @@ const Editor = () => {
   }, []);
 
   return (
-    <Slate
-      editor={editor}
-      value={value}
-      onChange={value => {
-        setValue(value);
-        const content = JSON.stringify(value);
-        localStorage.setItem("content", content);
-      }}
-    >
-      <Editable
-        renderElement={renderElement}
-        onKeyDown={event => {
-          if (event.key === "Enter") {
-            dispatch(addTask(value[value.length - 1].children.text));
-          } else if (event.key === "Tab") {
-            dispatch(addTask("tab"));
-          }
+    <div className={styles.container}>
+      <Slate
+        editor={editor}
+        value={value}
+        onChange={value => {
+          setValue(value);
+          const content = JSON.stringify(value);
+          localStorage.setItem("content", content);
         }}
-      />
-    </Slate>
+      >
+        <Editable
+          renderElement={renderElement}
+          onKeyDown={event => {
+            if (event.key === "Enter") {
+              dispatch(addTask(value[value.length - 1].children.text));
+            } else if (event.key === "Tab") {
+              dispatch(addTask("tab"));
+            }
+          }}
+        />
+      </Slate>
+    </div>
   );
 };
 

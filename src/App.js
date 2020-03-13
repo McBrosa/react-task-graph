@@ -1,10 +1,11 @@
 import React from "react";
 import { Editor } from "./components";
-import "./App.scss";
+import styles from "./App.scss";
 
 function App() {
   return (
-    <div className="App">
+    <div className={styles}>
+      <h2>Task List</h2>
       <Editor />
     </div>
   );
