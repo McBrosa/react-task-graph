@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 // Import the Slate editor factory.
-import { createEditor, Transforms } from "slate";
+import { createEditor, Transforms, Editor as sEditor } from "slate";
 import { withHistory } from "slate-history";
 import tasks, { addTask, loadTasksFromLocal } from "./tasksSlice";
 // Import the Slate components and React plugin.
@@ -26,7 +26,7 @@ const Editor = () => {
   }, []);
 
   useEffect(() => {
-    console.log(value);
+    console.log("State value: ", value);
   }, [value]);
 
   const renderElement = useCallback(props => {
@@ -35,6 +35,26 @@ const Editor = () => {
         return <Task {...props} />;
     }
   }, []);
+
+  const handleOnKeyDown = event => {
+    switch (event.key) {
+      case event.shiftKey && "Enter":
+        break;
+      case event.shiftKey && "Delete":
+      case event.shiftKey && "Backspace":
+        sEditor.deleteBackward(editor, { unit: "block" });
+      case "Enter":
+        break;
+      case "Tab":
+        const element = {
+          type: "bulleted-list",
+          children: [{ children: [{ text: "" }], type: "list-item" }],
+          focus: { offset: 0, path: editor.marks }
+        };
+        Transforms.insertNodes(editor, element);
+        dispatch(addTask("tab"));
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -51,21 +71,7 @@ const Editor = () => {
           renderElement={renderElement}
           placeholder="Get to work…"
           autoFocus
-          onKeyDown={event => {
-            switch (event.key) {
-              case event.shiftKey && "Enter":
-                break;
-              case "Enter":
-                break;
-              case "Tab":
-                const element = {
-                  type: "bulleted-list",
-                  children: [{ children: [{ text: "" }], type: "list-item" }]
-                };
-                Transforms.insertNodes(editor, element);
-                dispatch(addTask("tab"));
-            }
-          }}
+          onKeyDown={handleOnKeyDown}
         />
       </Slate>
     </div>

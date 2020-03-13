@@ -10,7 +10,6 @@ export const tasksSlice = createSlice({
       reducer(state, action) {
         console.log(action);
         const { id, text } = action.payload;
-        // state.push({ id, text, completed: false });
         state[id] = { id, text, completed: false };
       },
       prepare(text) {

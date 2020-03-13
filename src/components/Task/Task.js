@@ -10,6 +10,8 @@ const Task = props => {
   //   ])
   // );
 
+  console.log("Task props: ", props);
+
   return (
     <ul>
       <li {...props.attributes}>{props.children}</li>
