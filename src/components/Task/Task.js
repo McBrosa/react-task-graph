@@ -11,15 +11,12 @@ const Task = props => {
   // );
 
   console.log("Task props: ", props);
-
-  return (
+  const isSubtask = props.element.type === "list-item";
+  return isSubtask ? (
+    <li {...props.attributes}>{props.children}</li>
+  ) : (
     <ul>
       <li {...props.attributes}>{props.children}</li>
-      {/* <ul>
-        {props.children.subTasks.forEach(element => {
-          <li>{element}</li>;
-        })}
-      </ul> */}
     </ul>
   );
 };

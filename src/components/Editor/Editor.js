@@ -21,9 +21,9 @@ const Editor = () => {
   const [value, setValue] = useState(localContent);
 
   // Load content from localStorage if it exists
-  useEffect(() => {
-    dispatch(loadTasksFromLocal(localContent));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(loadTasksFromLocal(localContent));
+  // }, []);
 
   useEffect(() => {
     console.log("State value: ", value);
@@ -49,13 +49,11 @@ const Editor = () => {
       case "Tab":
         event.preventDefault();
         const element = {
-          type: "bulleted-list",
+          type: "task",
           children: [{ children: [{ text: "", tasks: {} }], type: "list-item" }]
         };
         Transforms.insertNodes(editor, element);
         Transforms.setPoint(editor, {}, { edge: "focus" });
-
-        dispatch(addTask("tab"));
     }
   };
 
